@@ -4,4 +4,8 @@ export const colors = {
     integration: "green",
     other: "gray",
   },
+  projectStatus: {
+    linking: "yellow",
+    active: "green",
+  },
 };

@@ -20,11 +20,11 @@
         "auth": {
             "methods": {
                 "jwt": true,
-                "phone": true,
-                "invites": true,
-                "anonymous": true,
-                "email-otp": true,
-                "magic-url": true,
+                "phone": false,
+                "invites": false,
+                "anonymous": false,
+                "email-otp": false,
+                "magic-url": false,
                 "email-password": true
             },
             "security": {
@@ -50,7 +50,7 @@
             "installCommand": "npm install",
             "buildCommand": "npm run build",
             "outputDirectory": "./.next",
-            "specification": "s-1vcpu-512mb",
+            "specification": "s-0.5vcpu-512mb",
             "buildRuntime": "node-22",
             "adapter": "ssr",
             "fallbackFile": "",
@@ -72,11 +72,331 @@
             ],
             "events": [],
             "schedule": "",
-            "timeout": 15,
+            "timeout": 300,
             "entrypoint": "src/main.js",
             "commands": "npm install",
             "specification": "s-0.5vcpu-512mb",
             "path": "functions/installer"
+        },
+        {
+            "$id": "68ff5f32002458198eaf",
+            "execute": [],
+            "name": "linker",
+            "enabled": true,
+            "logging": true,
+            "runtime": "node-22",
+            "scopes": [
+                "rows.read",
+                "documents.read",
+                "execution.read",
+                "execution.write"
+            ],
+            "events": [
+                "databases.68fca7cb002fb26ac958.tables.projects.rows.*.create"
+            ],
+            "schedule": "",
+            "timeout": 15,
+            "entrypoint": "src/main.js",
+            "commands": "npm install",
+            "specification": "s-0.5vcpu-512mb",
+            "path": "functions/linker"
+        },
+        {
+            "$id": "68ff972e001437d4c551",
+            "execute": [],
+            "name": "syncer",
+            "enabled": true,
+            "logging": true,
+            "runtime": "node-22",
+            "scopes": [
+                "rows.read",
+                "documents.read",
+                "rows.write",
+                "documents.write",
+                "execution.read",
+                "execution.write"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 600,
+            "entrypoint": "src/main.js",
+            "commands": "npm install",
+            "specification": "s-0.5vcpu-512mb",
+            "path": "functions/syncer"
+        }
+    ],
+    "tablesDB": [
+        {
+            "$id": "68fca7cb002fb26ac958",
+            "name": "Hub",
+            "enabled": true
+        }
+    ],
+    "tables": [
+        {
+            "$id": "functionalities",
+            "$permissions": [
+                "read(\"any\")",
+                "create(\"users\")"
+            ],
+            "databaseId": "68fca7cb002fb26ac958",
+            "name": "Functionalities",
+            "enabled": true,
+            "rowSecurity": true,
+            "columns": [
+                {
+                    "key": "title",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 256,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "description",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 4096,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "services",
+                    "type": "string",
+                    "required": false,
+                    "array": true,
+                    "elements": [
+                        "databases",
+                        "functions",
+                        "storage",
+                        "messaging",
+                        "sites"
+                    ],
+                    "format": "enum",
+                    "default": null
+                },
+                {
+                    "key": "category",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "elements": [
+                        "content-management",
+                        "integration",
+                        "tool",
+                        "api"
+                    ],
+                    "format": "enum",
+                    "default": null
+                },
+                {
+                    "key": "author",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 36,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "versions",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedTable": "versions",
+                    "relationType": "oneToMany",
+                    "twoWay": true,
+                    "twoWayKey": "functionality",
+                    "onDelete": "cascade",
+                    "side": "parent"
+                },
+                {
+                    "key": "cover",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 36,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "versions",
+            "$permissions": [],
+            "databaseId": "68fca7cb002fb26ac958",
+            "name": "Versions",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "functionality",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedTable": "functionalities",
+                    "relationType": "oneToMany",
+                    "twoWay": true,
+                    "twoWayKey": "versions",
+                    "onDelete": "cascade",
+                    "side": "child"
+                },
+                {
+                    "key": "number",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 32,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "compatibility",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 32,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "changelog",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 4096,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "installs",
+                    "type": "integer",
+                    "required": false,
+                    "array": false,
+                    "min": 0,
+                    "max": 9223372036854775807,
+                    "default": 0
+                },
+                {
+                    "key": "file",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 36,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "installs",
+            "$permissions": [],
+            "databaseId": "68fca7cb002fb26ac958",
+            "name": "Installs",
+            "enabled": true,
+            "rowSecurity": true,
+            "columns": [
+                {
+                    "key": "version",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedTable": "versions",
+                    "relationType": "manyToOne",
+                    "twoWay": false,
+                    "twoWayKey": "68fdb109003a59330361",
+                    "onDelete": "setNull",
+                    "side": "parent"
+                },
+                {
+                    "key": "user",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 36,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "finishedAt",
+                    "type": "datetime",
+                    "required": false,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "projects",
+            "$permissions": [],
+            "databaseId": "68fca7cb002fb26ac958",
+            "name": "Projects",
+            "enabled": true,
+            "rowSecurity": true,
+            "columns": [
+                {
+                    "key": "endpoint",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 4096,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "key",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 128,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "name",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 256,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "status",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "elements": [
+                        "active",
+                        "linking"
+                    ],
+                    "format": "enum",
+                    "default": "linking"
+                }
+            ],
+            "indexes": []
+        }
+    ],
+    "buckets": [
+        {
+            "$id": "68fcabcf0013485fa596",
+            "$permissions": [
+                "read(\"any\")"
+            ],
+            "fileSecurity": false,
+            "name": "Functionalities",
+            "enabled": true,
+            "maximumFileSize": 50000000,
+            "allowedFileExtensions": [],
+            "compression": "gzip",
+            "encryption": false,
+            "antivirus": true
         }
     ]
 }

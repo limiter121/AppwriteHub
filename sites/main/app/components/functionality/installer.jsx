@@ -1,6 +1,14 @@
 "use client";
 
-import { Alert, Button, Modal, Select, Stack, Text, TextInput } from "@mantine/core";
+import {
+  Alert,
+  Button,
+  Modal,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconLinkPlus, IconPlus } from "@tabler/icons-react";
 import Link from "next/link";
@@ -39,10 +47,23 @@ export default function FunctionalityInstaller({ children, functionality }) {
           <Select
             label="Project"
             placeholder="Select your project"
-            nothingFoundMessage={<Stack gap="xs">
-              <Text size="sm">No linked projects found...</Text>
-              <Button color="pink" variant="light" component={Link} href="/dashboard" leftSection={<IconLinkPlus size={16} />} size="xs" w={150} mx="auto">Link a project</Button>
-            </Stack>}
+            nothingFoundMessage={
+              <Stack gap="xs">
+                <Text size="sm">No linked projects found...</Text>
+                <Button
+                  color="pink"
+                  variant="light"
+                  component={Link}
+                  href="/dashboard"
+                  leftSection={<IconLinkPlus size={16} />}
+                  size="xs"
+                  w={150}
+                  mx="auto"
+                >
+                  Link a project
+                </Button>
+              </Stack>
+            }
             required
           />
 

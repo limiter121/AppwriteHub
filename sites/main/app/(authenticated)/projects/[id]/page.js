@@ -1,20 +1,32 @@
+import { colors } from "@/lib/config";
 import { createSessionClient, getLoggedInUser } from "@/lib/server/appwrite";
 import {
   ActionIcon,
+  Alert,
+  Anchor,
   Badge,
   Group,
   Menu,
   MenuDivider,
   MenuDropdown,
   MenuItem,
+  MenuLabel,
   MenuTarget,
   Stack,
   Text,
 } from "@mantine/core";
-import { IconDots, IconRefresh, IconUnlink } from "@tabler/icons-react";
+import {
+  IconAlertCircle,
+  IconClockPlus,
+  IconDots,
+  IconExternalLink,
+  IconRefresh,
+  IconUnlink,
+} from "@tabler/icons-react";
+import { getFormatter } from "next-intl/server";
 import { redirect } from "next/dist/server/api-utils";
 
-function ProjectActionMenu({ project }) {
+function ProjectActionMenu({ project, formatDate }) {
   return (
     <Menu shadow="md" width={200}>
       <MenuTarget>
@@ -24,6 +36,20 @@ function ProjectActionMenu({ project }) {
       </MenuTarget>
 
       <MenuDropdown>
+        <MenuLabel>
+          Last updated:
+          <br />
+          <b>
+            {formatDate(project.$createdAt, {
+              day: "numeric",
+              month: "numeric",
+              year: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+              second: "numeric",
+            })}
+          </b>
+        </MenuLabel>
         <MenuItem leftSection={<IconRefresh size={14} />}>Refresh</MenuItem>
 
         <MenuDivider />
@@ -36,10 +62,75 @@ function ProjectActionMenu({ project }) {
   );
 }
 
+function ActiveProjectView({ project, formatDate }) {
+  const installs = JSON.parse(project.installs || "[]");
+
+  return (
+    <>
+      <h2 className="font-bold text-lg">Installed functionalities</h2>
+      <ul>
+        {installs.map((install) => (
+          <li key={install.$id} className="p-2">
+            <Anchor
+              c="pink"
+              fw={500}
+              href={`/functionality/${install.functionalityId}`}
+              target="_blank"
+            >
+              {install.functionality}{" "}
+              <IconExternalLink className="inline" size={18} />
+            </Anchor>
+            <p className="text-sm text-gray-600 flex items-center gap-2">
+              <b>{install.version}</b> -{" "}
+              <span
+                className="flex items-center gap-1"
+                title="Installation date"
+              >
+                <IconClockPlus size={16} />{" "}
+                {formatDate(install.$createdAt, {
+                  day: "numeric",
+                  month: "numeric",
+                  year: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                  second: "numeric",
+                })}
+              </span>
+            </p>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
+function LinkingProjectView({ project }) {
+  return (
+    <>
+      <Alert
+        icon={<IconAlertCircle size={24} />}
+        color="yellow"
+        title="Project linking in progress..."
+      >
+        <Text size="sm">
+          Your project is being linked with AppwriteHub. This might take a few
+          minutes...
+        </Text>
+      </Alert>
+    </>
+  );
+}
+
 export default async function Project({ params }) {
   const user = await getLoggedInUser();
   if (!user) redirect("/auth/signin");
 
+  const format = await getFormatter();
+  const formatDate = (date, opts) =>
+    format.dateTime(
+      new Date(date),
+      opts || { day: "numeric", month: "numeric", year: "numeric" },
+    );
   const { id } = await params;
   const { tablesDB, Query } = await createSessionClient();
   const project = await tablesDB.getRow({
@@ -62,12 +153,15 @@ export default async function Project({ params }) {
             ID: {project.$id}
           </Text>
         </Stack>
-        <Badge color="green" size="lg">
+        <Badge color={colors.projectStatus[project.status]} size="lg">
           {project.status}
         </Badge>
-        <ProjectActionMenu project={project} />
+        <ProjectActionMenu project={project} formatDate={formatDate} />
       </Group>
-      <h2 className="font-medium">Installed functionalities</h2>
+      {project.status === "linking" && <LinkingProjectView project={project} />}
+      {project.status === "active" && (
+        <ActiveProjectView project={project} formatDate={formatDate} />
+      )}
     </main>
   );
 }

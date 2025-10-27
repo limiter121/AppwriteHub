@@ -2,11 +2,18 @@
 
 import { Alert, Button, Modal, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconLinkPlus, IconPlus } from "@tabler/icons-react";
+import { IconLinkPlus } from "@tabler/icons-react";
+import { linkProject } from "@/lib/actions";
+import { useActionState } from "react";
 
 export default function ProjectLinker({ children, buttonProps, iconProps }) {
+  const [added, action, pending] = useActionState(linkProject, false);
   const [linkModalOpened, { open: openLinkModal, close: closeLinkModal }] =
     useDisclosure(false);
+
+  if (added && linkModalOpened) {
+    closeLinkModal();
+  }
 
   return (
     <>
@@ -30,8 +37,16 @@ export default function ProjectLinker({ children, buttonProps, iconProps }) {
         title={<>Link your Appwrite project</>}
         centered
       >
-        <form>
-          <section className="border-b pb-4 border-slate-200">
+        <form action={action}>
+          <TextInput
+            name="name"
+            label="Project name"
+            placeholder="ex. My Awesome Project"
+            mb="md"
+            required
+          />
+
+          <section className="border-y py-4 border-gray-700">
             <p className="text-sm">
               Obtained from the Appwrite Console → <i>Your Project</i> →
               Settings → Overview → API Credentials
@@ -72,6 +87,7 @@ export default function ProjectLinker({ children, buttonProps, iconProps }) {
 
           <Button
             type="submit"
+            loading={pending}
             color="pink"
             leftSection={<IconLinkPlus size={18} />}
             size="sm"

@@ -1,4 +1,5 @@
 import ProjectLinker from "@/components/project/linker";
+import { colors } from "@/lib/config";
 import { createSessionClient, getLoggedInUser } from "@/lib/server/appwrite";
 import { Badge, Group, Text, Anchor, Stack, Paper } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
@@ -9,7 +10,7 @@ import { redirect } from "next/navigation";
 export default async function Dashboard() {
   const user = await getLoggedInUser();
   if (!user) redirect("/auth/signin");
-  
+
   const { tablesDB, Query } = await createSessionClient();
   const { rows: projects } = await tablesDB.listRows({
     databaseId: "68fca7cb002fb26ac958",
@@ -18,7 +19,7 @@ export default async function Dashboard() {
   });
 
   return (
-    <div className="container mx-auto max-w-4xl">
+    <div className="container mx-auto max-w-4xl mb-20">
       <h2 className="text-lg mb-10">
         🥳 Welcome back, <span className="font-bold">{user.name}</span> !
       </h2>
@@ -65,7 +66,7 @@ export default async function Dashboard() {
                     ID: {project.$id}
                   </Text>
                 </Stack>
-                <Badge color="green" size="lg">
+                <Badge color={colors.projectStatus[project.status]} size="lg">
                   {project.status}
                 </Badge>
                 <IconChevronRight className="text-text" size={30} />

@@ -1,7 +1,5 @@
-import { createAdminClient, Query } from "@/lib/server/appwrite";
+import { createAdminClient } from "@/lib/server/appwrite";
 import {
-  Button,
-  Image,
   Table,
   TableTbody,
   TableTh,
@@ -11,13 +9,9 @@ import {
   Timeline,
   TimelineItem,
   Text,
-  Anchor,
-  Modal,
 } from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
 import { getFormatter } from "next-intl/server";
 import { colors } from "@/lib/config";
-import Link from "next/link";
 import FunctionalityInstaller from "@/components/functionality/installer";
 
 export async function generateMetadata({ params }, parent) {
@@ -56,14 +50,6 @@ export default async function Functionality({ params }) {
     queries: [Query.select(["*", "versions.*"])],
   });
   const versions = functionality.versions.reverse();
-  const { rows: installs } = await tablesDB.listRows({
-    databaseId: "68fca7cb002fb26ac958",
-    tableId: "installs",
-    queries: [
-      Query.select(["$id", "version.number"]),
-      Query.equal("version.functionality.$id", functionality.$id),
-    ],
-  });
 
   return (
     <>
@@ -127,16 +113,7 @@ export default async function Functionality({ params }) {
                 </TableTbody>
               </Table>
 
-              <FunctionalityInstaller functionality={functionality}>
-                {installs.length > 0 && (
-                  <p className="text-sm text-center mt-2">
-                    You already installed in{" "}
-                    <Anchor component={Link} href="/dashboard" size="sm">
-                      {installs.length} projects
-                    </Anchor>
-                  </p>
-                )}
-              </FunctionalityInstaller>
+              <FunctionalityInstaller functionality={functionality} />
             </div>
           </div>
         </div>

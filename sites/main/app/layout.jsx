@@ -6,7 +6,8 @@ import "./globals.css";
 
 export const metadata = {
   title: process.env.NEXT_PUBLIC_APP_NAME,
-  description: "A centralized, community-powered collection of pre-built Appwrite functionalities. Get instant power-ups for your project with one-click install.",
+  description:
+    "A centralized, community-powered collection of pre-built Appwrite functionalities. Get instant power-ups for your project with one-click install.",
 };
 
 export default function RootLayout({ children }) {
