@@ -1,0 +1,82 @@
+{
+    "projectId": "68fa5b200021065d9e06",
+    "endpoint": "https://fra.cloud.appwrite.io/v1",
+    "projectName": "AppwriteHub",
+    "settings": {
+        "services": {
+            "account": true,
+            "avatars": true,
+            "databases": true,
+            "locale": true,
+            "health": true,
+            "storage": true,
+            "teams": true,
+            "users": true,
+            "sites": true,
+            "functions": true,
+            "graphql": true,
+            "messaging": true
+        },
+        "auth": {
+            "methods": {
+                "jwt": true,
+                "phone": true,
+                "invites": true,
+                "anonymous": true,
+                "email-otp": true,
+                "magic-url": true,
+                "email-password": true
+            },
+            "security": {
+                "duration": 31536000,
+                "limit": 0,
+                "sessionsLimit": 10,
+                "passwordHistory": 0,
+                "passwordDictionary": false,
+                "personalDataCheck": false,
+                "sessionAlerts": false,
+                "mockNumbers": []
+            }
+        }
+    },
+    "sites": [
+        {
+            "$id": "68fb27100006017cd2e9",
+            "name": "main",
+            "enabled": true,
+            "logging": true,
+            "framework": "nextjs",
+            "timeout": 30,
+            "installCommand": "npm install",
+            "buildCommand": "npm run build",
+            "outputDirectory": "./.next",
+            "specification": "s-1vcpu-512mb",
+            "buildRuntime": "node-22",
+            "adapter": "ssr",
+            "fallbackFile": "",
+            "path": "sites/main"
+        }
+    ],
+    "functions": [
+        {
+            "$id": "68fdcbc20008ec351432",
+            "execute": [],
+            "name": "installer",
+            "enabled": true,
+            "logging": true,
+            "runtime": "node-22",
+            "scopes": [
+                "rows.read",
+                "documents.read",
+                "files.read"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 15,
+            "entrypoint": "src/main.js",
+            "commands": "npm install",
+            "specification": "s-0.5vcpu-512mb",
+            "path": "functions/installer"
+        }
+    ]
+}

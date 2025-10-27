@@ -1,0 +1,30 @@
+{
+  "name": "appwritehub",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "prettier --write ."
+  },
+  "dependencies": {
+    "@mantine/core": "^8.3.5",
+    "@mantine/hooks": "^8.3.5",
+    "@tabler/icons-react": "^3.35.0",
+    "appwrite": "^21.2.1",
+    "motion": "^12.23.24",
+    "next": "^15.5.4",
+    "next-intl": "^4.4.0",
+    "node-appwrite": "^20.2.1",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "tailwind-preset-mantine": "^3.0.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.16",
+    "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4.1.15"
+  }
+}

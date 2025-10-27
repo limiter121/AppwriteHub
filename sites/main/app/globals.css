@@ -1,0 +1,79 @@
+@import "tailwind-preset-mantine";
+
+@keyframes text-glow {
+  0%,
+  100% {
+    background-size: 200% 200%;
+    background-position: left center;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
+}
+.animate-text-glow {
+  animation: text-glow 5s ease infinite;
+}
+
+@keyframes flip-words {
+  0% {
+    transform: translateY(12%);
+  }
+  /* 10% { transform: translateY(-112%); } */
+  25% {
+    transform: translateY(-100%);
+  }
+  35% {
+    transform: translateY(-112%);
+  }
+  50% {
+    transform: translateY(-212%);
+  }
+  60% {
+    transform: translateY(-200%);
+  }
+  75% {
+    transform: translateY(-312%);
+  }
+  85% {
+    transform: translateY(-300%);
+  }
+  100% {
+    transform: translateY(-400%);
+  }
+}
+.animate-flip-words {
+  animation: flip-words 8s ease infinite;
+}
+
+.checker-background {
+  position: relative;
+}
+.checker-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-size: 50px 30px;
+  background-image:
+    linear-gradient(#e6498030 1px, transparent 1px),
+    linear-gradient(90deg, #e6498030 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse at 50% 50%, black 0%, transparent 85%);
+  z-index: -1;
+  background-position: center center;
+}
+
+[data-mantine-color-scheme="dark"] .lightmode {
+  display: none;
+}
+[data-mantine-color-scheme="light"] .lightmode {
+  display: block;
+}
+[data-mantine-color-scheme="light"] .darkmode {
+  display: none;
+}
+[data-mantine-color-scheme="dark"] .darkmode {
+  display: block;
+}
