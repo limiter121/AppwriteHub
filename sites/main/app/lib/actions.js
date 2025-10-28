@@ -41,7 +41,12 @@ export async function signUpWithEmail(currentState, formData) {
   const name = formData.get("name");
 
   try {
-    if (name.toLowerCase().replace(/[^a-z]/g, "").includes("appwritehub")) {
+    if (
+      name
+        .toLowerCase()
+        .replace(/[^a-z]/g, "")
+        .includes("appwritehub")
+    ) {
       return "Name cannot contain 'AppwriteHub'";
     }
 

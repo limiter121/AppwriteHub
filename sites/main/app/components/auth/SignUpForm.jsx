@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { signUpWithEmail } from "@/lib/actions";
 import { Alert, Anchor, Button, Checkbox, TextInput } from "@mantine/core";
 import Link from "next/link";

@@ -50,7 +50,7 @@ export async function createAdminClient() {
     },
     get ID() {
       return ID;
-    }
+    },
   };
 }
 

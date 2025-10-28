@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { Text } from '@mantine/core';
-import { useInViewport } from '@mantine/hooks';
-import { useEffect, useState } from 'react';
+import { Text } from "@mantine/core";
+import { useInViewport } from "@mantine/hooks";
+import { useEffect, useState } from "react";
 
 export const AnimatedCounter = ({
   value: endValue,

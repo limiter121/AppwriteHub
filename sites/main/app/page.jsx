@@ -41,19 +41,31 @@ export default async function Home() {
           <div className="flex flex-wrap -m-4 text-center">
             <div className="p-4 w-1/3">
               <h2>
-                <AnimatedCounter className="title-font font-medium sm:text-4xl text-3xl text-bright" suffix="+" value={103} />
+                <AnimatedCounter
+                  className="title-font font-medium sm:text-4xl text-3xl text-bright"
+                  suffix="+"
+                  value={103}
+                />
               </h2>
               <p className="leading-relaxed">Functionalities</p>
             </div>
             <div className="p-4 w-1/3">
               <h2>
-                <AnimatedCounter className="title-font font-medium sm:text-4xl text-3xl text-bright" suffix="+" value={874} />
+                <AnimatedCounter
+                  className="title-font font-medium sm:text-4xl text-3xl text-bright"
+                  suffix="+"
+                  value={874}
+                />
               </h2>
               <p className="leading-relaxed">Projects</p>
             </div>
             <div className="p-4 w-1/3">
               <h2>
-                <AnimatedCounter className="title-font font-medium sm:text-4xl text-3xl text-bright" suffix="+" value={652} />
+                <AnimatedCounter
+                  className="title-font font-medium sm:text-4xl text-3xl text-bright"
+                  suffix="+"
+                  value={652}
+                />
               </h2>
               <p className="leading-relaxed">Users</p>
             </div>

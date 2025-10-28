@@ -89,7 +89,7 @@ export default async function Functionality({ params }) {
                 Uses:
                 {functionality.services.map((service) => (
                   <li key={service}>
-                    <Badge  color="pink" variant="light">
+                    <Badge color="pink" variant="light">
                       {service.toUpperCase()}
                     </Badge>
                   </li>
@@ -109,7 +109,12 @@ export default async function Functionality({ params }) {
                     <TableTr>
                       <TableTh>Repository</TableTh>
                       <TableTd>
-                        <Anchor className="block truncate" href={functionality.repository} target="_blank" size="sm">
+                        <Anchor
+                          className="block truncate"
+                          href={functionality.repository}
+                          target="_blank"
+                          size="sm"
+                        >
                           {functionality.repository}
                         </Anchor>
                       </TableTd>

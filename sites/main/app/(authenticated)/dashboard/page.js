@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Dashboard · " + process.env.NEXT_PUBLIC_APP_NAME,
-}
+};
 
 export default async function Dashboard() {
   const user = await getLoggedInUser();
