@@ -2,7 +2,7 @@
 
 # AppwriteHub Core
 
-The Core servers as the project's central deployment registry - enabling seamless, one-click installs and updates directly from your AppwriteHub Dashboard.
+The Core serves as the project's central deployment registry - enabling seamless, one-click installs and updates directly from your AppwriteHub Dashboard.
 
 **This functionality will be installed automatically in all linked projects.**
 
