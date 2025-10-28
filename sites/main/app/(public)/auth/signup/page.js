@@ -1,47 +1,13 @@
-import { getLoggedInUser, getSessionCookieName } from "@/lib/server/appwrite";
-import { ID } from "node-appwrite";
-import { createAdminClient } from "@/lib/server/appwrite";
-import { cookies } from "next/headers";
+import { getLoggedInUser } from "@/lib/server/appwrite";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-
-import { TextInput, Button, Anchor, Checkbox, Divider } from "@mantine/core";
+import { Button, Divider } from "@mantine/core";
 import { IconBrandGithub } from "@tabler/icons-react";
-
-async function signUpWithEmail(formData) {
-  "use server";
-
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const name = formData.get("name");
-
-  const { account } = await createAdminClient();
-
-  await account.create({
-    userId: ID.unique(),
-    email,
-    password,
-    name,
-  });
-  const session = await account.createEmailPasswordSession({
-    email,
-    password,
-  });
-  const cookie = process.env.NEXT_PUBLIC_APPWRITE_COOKIE;
-
-  cookies().set(cookie, session.secret, {
-    path: "/",
-    httpOnly: true,
-    sameSite: "strict",
-    secure: true,
-  });
-
-  redirect("/account");
-}
+import SignUpForm from "@/components/auth/SignUpForm";
 
 export default async function SignUpPage() {
   const user = await getLoggedInUser();
-  if (user) redirect("/account");
+  if (user) redirect("/dashboard");
 
   return (
     <>
@@ -70,95 +36,8 @@ export default async function SignUpPage() {
 
                 <Divider my="md" label="OR" labelPosition="center" />
 
-                <form action={signUpWithEmail}>
-                  <div className="mb-4">
-                    <label
-                      htmlFor="name"
-                      className="text-dark mb-3 block text-sm dark:text-white"
-                    >
-                      {" "}
-                      Full Name{" "}
-                    </label>
-                    <TextInput
-                      id="name"
-                      name="name"
-                      placeholder="Enter your full name"
-                      type="text"
-                      autoComplete="name"
-                      size="lg"
-                      required
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <label
-                      htmlFor="email"
-                      className="text-dark mb-3 block text-sm dark:text-white"
-                    >
-                      {" "}
-                      Email{" "}
-                    </label>
-                    <TextInput
-                      id="email"
-                      name="email"
-                      placeholder="Enter your email"
-                      type="email"
-                      autoComplete="email"
-                      size="lg"
-                      required
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <label
-                      htmlFor="password"
-                      className="text-dark mb-3 block text-sm dark:text-white"
-                    >
-                      {" "}
-                      Your Password{" "}
-                    </label>
-                    <TextInput
-                      id="password"
-                      name="password"
-                      placeholder="Enter your Password"
-                      type="password"
-                      autoComplete="new-password"
-                      minLength={8}
-                      size="lg"
-                      required
-                    />
-                  </div>
-                  <div className="mb-8 flex">
-                    <Checkbox
-                      label={
-                        <>
-                          By creating an account you agree to the{" "}
-                          <Anchor
-                            component={Link}
-                            href="/terms"
-                            target="_blank"
-                            inherit
-                          >
-                            terms and conditions
-                          </Anchor>{" "}
-                          and the{" "}
-                          <Anchor
-                            component={Link}
-                            href="/privacy"
-                            target="_blank"
-                            inherit
-                          >
-                            privacy policy
-                          </Anchor>
-                        </>
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="mb-6">
-                    <Button type="submit" size="lg" fullWidth>
-                      Sign up
-                    </Button>
-                  </div>
-                </form>
+                <SignUpForm />
+
                 <p className="text-body-color text-center text-base font-medium">
                   Already have an account?{" "}
                   <Link

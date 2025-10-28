@@ -1,5 +1,5 @@
 "use server";
-import { Client, Account, TablesDB, Query } from "node-appwrite";
+import { Client, Account, TablesDB, Query, ID } from "node-appwrite";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -48,6 +48,9 @@ export async function createAdminClient() {
     get Query() {
       return Query;
     },
+    get ID() {
+      return ID;
+    }
   };
 }
 
