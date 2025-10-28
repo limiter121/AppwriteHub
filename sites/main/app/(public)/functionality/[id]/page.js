@@ -85,12 +85,14 @@ export default async function Functionality({ params }) {
                 {functionality.description}
               </p>
 
-              <ul className="flex gap-2 items-center">
+              <ul className="flex flex-wrap gap-2 gap-x-2 gap-y-1 mt-4 items-center">
                 Uses:
                 {functionality.services.map((service) => (
-                  <Badge key={service} color="pink" variant="light" my="xs">
-                    {service.toUpperCase()}
-                  </Badge>
+                  <li key={service}>
+                    <Badge  color="pink" variant="light">
+                      {service.toUpperCase()}
+                    </Badge>
+                  </li>
                 ))}
               </ul>
 
