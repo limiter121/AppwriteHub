@@ -78,7 +78,14 @@
   display: block;
 }
 
-.github-btn > span > span { 
-    display: flex;
-    margin-right: 20px;
+.github-btn > span > span {
+  display: flex;
+  margin-right: 20px;
+}
+
+@media (max-width: theme('screens.sm')) {
+  .github-btn > span > span {
+    margin-right: 0;
+    margin-top: 10px;
+  }
 }

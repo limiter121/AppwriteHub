@@ -10,8 +10,8 @@ export default async function Header() {
 
   return (
     <header>
-      <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-        <Link href="/" className="flex font-medium items-center mb-4 md:mb-0">
+      <div className="container mx-auto flex flex-wrap p-5 flex-col sm:flex-row items-center">
+        <Link href="/" className="flex font-medium items-center mb-4 sm:mb-0">
           <Image
             src="/apple-touch-icon-60x60.png"
             alt={process.env.NEXT_PUBLIC_APP_NAME}
@@ -24,7 +24,7 @@ export default async function Header() {
         </Link>
         <HeaderLinks authenticated={!!user} />
         <HeaderGithub />
-        <HeaderUser className="mt-4 md:mt-0" user={user} />
+        <HeaderUser className="mt-4 sm:mt-0" user={user} />
       </div>
     </header>
   );

@@ -13,7 +13,7 @@ export default function HeaderLinks({ authenticated }) {
   const pathname = usePathname();
 
   return (
-    <nav className="md:ml-auto md:mr-auto flex flex-wrap gap-5 items-center text-base justify-center">
+    <nav className="sm:ml-auto sm:mr-auto flex flex-wrap gap-5 items-center text-base justify-center">
       {links
         .filter((link) => (link.authenticated ? authenticated : true))
         .map((link) => (
