@@ -1,0 +1,59 @@
+{
+    "projectName": "AppwriteHub",
+    "tablesDB": [
+        {
+            "$id": "appwritehub",
+            "name": "AppwriteHub",
+            "enabled": true
+        }
+    ],
+    "tables": [
+        {
+            "$id": "installs",
+            "$permissions": [],
+            "databaseId": "appwritehub",
+            "name": "Installs",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "functionality",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 256,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "functionalityId",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 256,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "version",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 32,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "versionId",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 36,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": []
+        }
+    ]
+}
