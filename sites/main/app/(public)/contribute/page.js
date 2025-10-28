@@ -8,7 +8,7 @@ export const metadata = {
 export default async function ContributePage() {
   return (
     <main className="container mx-auto max-w-4xl">
-      <h1 className="text-3xl font-bold mb-4">Contribute</h1>
+      <h1 className="text-3xl font-bold mb-4 px-4 text-center">Contribute</h1>
 
       <section className="text-gray-600 body-font">
         <div className="container px-5 py-10 mx-auto flex flex-wrap">

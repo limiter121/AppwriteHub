@@ -64,7 +64,7 @@ export default async function Browse() {
           </p>
         </div>
         <Suspense fallback={<div>Loading...</div>}>
-          <SimpleGrid cols={4}>
+          <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 4 }}>
             {functionalities.map((functionality) => (
               <Card
                 key={functionality.$id}
