@@ -107,7 +107,7 @@ export default async function Functionality({ params }) {
                     <TableTr>
                       <TableTh>Repository</TableTh>
                       <TableTd>
-                        <Anchor href={functionality.repository} target="_blank" size="sm">
+                        <Anchor className="block truncate" href={functionality.repository} target="_blank" size="sm">
                           {functionality.repository}
                         </Anchor>
                       </TableTd>
