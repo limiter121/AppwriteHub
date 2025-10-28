@@ -1,17 +1,6 @@
+import FunctionalityGrid from "@/components/functionality/grid";
 import RotatingText from "@/components/rotating-text";
 import { createAdminClient } from "@/lib/server/appwrite";
-import {
-  Badge,
-  Card,
-  CardSection,
-  Group,
-  Image,
-  SimpleGrid,
-  Text,
-} from "@mantine/core";
-import Link from "next/link";
-import { Suspense } from "react";
-import { colors } from "@/lib/config";
 
 export const metadata = {
   title: "Browse · " + process.env.NEXT_PUBLIC_APP_NAME,
@@ -39,7 +28,7 @@ export default async function Browse() {
   return (
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-16 mx-auto">
-        <div className="flex flex-wrap w-full mb-20">
+        <div className="flex flex-wrap w-full mb-10">
           <div className="lg:w-1/2 w-full mb-6 lg:mb-0">
             <h1 className="sm:text-3xl text-2xl font-medium title-font mb-2 text-bright">
               Discover{" "}
@@ -64,70 +53,7 @@ export default async function Browse() {
             with one-click install.
           </p>
         </div>
-        <Suspense fallback={<div>Loading...</div>}>
-          <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 4 }}>
-            {functionalities.map((functionality) => (
-              <Card
-                key={functionality.$id}
-                shadow="sm"
-                padding="lg"
-                radius="md"
-                withBorder
-                className="hover:z-10 hover:scale-105 hover:shadow-lg hover:border-pink-600 group transition"
-                component={Link}
-                href={`/functionality/${functionality.$id}`}
-              >
-                <CardSection>
-                  <Image
-                    src={
-                      functionality.cover
-                        ? `https://fra.cloud.appwrite.io/v1/storage/buckets/68fcabcf0013485fa596/files/${functionality.cover}/view?project=68fa5b200021065d9e06`
-                        : "/placeholder-light.avif"
-                    }
-                    h={256}
-                    alt={functionality.title}
-                    darkHidden
-                  />
-                  <Image
-                    src={
-                      functionality.cover
-                        ? `https://fra.cloud.appwrite.io/v1/storage/buckets/68fcabcf0013485fa596/files/${functionality.cover}/view?project=68fa5b200021065d9e06`
-                        : "/placeholder-dark.avif"
-                    }
-                    h={256}
-                    alt={functionality.title}
-                    lightHidden
-                  />
-                </CardSection>
-
-                <Text
-                  fw="bold"
-                  size="xl"
-                  mt="sm"
-                  className="group-hover:text-pink-600 transition"
-                >
-                  {functionality.title}
-                </Text>
-                <Text size="xs" c="dimmed">
-                  by {functionality.author}
-                </Text>
-
-                <Text size="sm" c="dimmed" fs="italic" mt="sm">
-                  {functionality.description.substring(0, 100)}...
-                </Text>
-
-                <Group justify="space-between" mt="sm">
-                  <Badge
-                    color={colors.category[functionality.category]}
-                    size="sm"
-                  >
-                    {functionality.category.replace("-", " ").toUpperCase()}
-                  </Badge>
-                </Group>
-              </Card>
-            ))}
-          </SimpleGrid>
-        </Suspense>
+        <FunctionalityGrid functionalities={functionalities} />
       </div>
     </section>
   );
