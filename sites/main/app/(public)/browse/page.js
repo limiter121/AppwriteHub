@@ -13,6 +13,11 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { colors } from "@/lib/config";
 
+export const metadata = {
+  title: "Browse · " + process.env.NEXT_PUBLIC_APP_NAME,
+  description: "Browse a centralized, community-powered collection of pre-built Appwrite functionalities. Get instant power-ups for your project with one-click install.",
+}
+
 export default async function Browse() {
   const { tablesDB, Query } = await createAdminClient();
   const { rows: functionalities } = await tablesDB.listRows({
