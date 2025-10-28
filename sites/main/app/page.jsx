@@ -6,6 +6,7 @@ import {
   IconWorld,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import { AnimatedCounter } from "./components/animated-counter";
 
 export default async function Home() {
   return (
@@ -39,20 +40,20 @@ export default async function Home() {
         <div className="container px-5 py-10 mx-auto">
           <div className="flex flex-wrap -m-4 text-center">
             <div className="p-4 w-1/3">
-              <h2 className="title-font font-medium sm:text-4xl text-3xl text-bright">
-                50+
+              <h2>
+                <AnimatedCounter className="title-font font-medium sm:text-4xl text-3xl text-bright" suffix="+" value={103} />
               </h2>
               <p className="leading-relaxed">Functionalities</p>
             </div>
             <div className="p-4 w-1/3">
-              <h2 className="title-font font-medium sm:text-4xl text-3xl text-bright">
-                1000+
+              <h2>
+                <AnimatedCounter className="title-font font-medium sm:text-4xl text-3xl text-bright" suffix="+" value={874} />
               </h2>
               <p className="leading-relaxed">Projects</p>
             </div>
             <div className="p-4 w-1/3">
-              <h2 className="title-font font-medium sm:text-4xl text-3xl text-bright">
-                100+
+              <h2>
+                <AnimatedCounter className="title-font font-medium sm:text-4xl text-3xl text-bright" suffix="+" value={652} />
               </h2>
               <p className="leading-relaxed">Users</p>
             </div>
