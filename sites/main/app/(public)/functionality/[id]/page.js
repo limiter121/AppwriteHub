@@ -9,6 +9,7 @@ import {
   Timeline,
   TimelineItem,
   Text,
+  Anchor,
 } from "@mantine/core";
 import { getFormatter } from "next-intl/server";
 import { colors } from "@/lib/config";
@@ -96,11 +97,22 @@ export default async function Functionality({ params }) {
               <Table variant="vertical" layout="fixed" withTableBorder my="xl">
                 <TableTbody>
                   <TableTr>
-                    <TableTh>Installs</TableTh>
+                    <TableTh w={160}>Installs</TableTh>
                     <TableTd>
                       {versions.reduce((a, b) => a + b.installs, 0)}
                     </TableTd>
                   </TableTr>
+
+                  {functionality.repository && (
+                    <TableTr>
+                      <TableTh>Repository</TableTh>
+                      <TableTd>
+                        <Anchor href={functionality.repository} target="_blank" size="sm">
+                          {functionality.repository}
+                        </Anchor>
+                      </TableTd>
+                    </TableTr>
+                  )}
 
                   <TableTr>
                     <TableTh>Added</TableTh>
