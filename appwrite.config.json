@@ -220,6 +220,14 @@
                     "size": 36,
                     "default": null,
                     "encrypt": false
+                },
+                {
+                    "key": "repository",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "format": "url",
+                    "default": null
                 }
             ],
             "indexes": []
@@ -334,7 +342,9 @@
         },
         {
             "$id": "projects",
-            "$permissions": [],
+            "$permissions": [
+                "create(\"users\")"
+            ],
             "databaseId": "68fca7cb002fb26ac958",
             "name": "Projects",
             "enabled": true,
@@ -354,17 +364,17 @@
                     "type": "string",
                     "required": true,
                     "array": false,
-                    "size": 128,
+                    "size": 300,
                     "default": null,
                     "encrypt": false
                 },
                 {
                     "key": "name",
                     "type": "string",
-                    "required": true,
+                    "required": false,
                     "array": false,
                     "size": 256,
-                    "default": null,
+                    "default": "",
                     "encrypt": false
                 },
                 {
@@ -374,10 +384,20 @@
                     "array": false,
                     "elements": [
                         "active",
-                        "linking"
+                        "linking",
+                        "unreachable"
                     ],
                     "format": "enum",
                     "default": "linking"
+                },
+                {
+                    "key": "installs",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 1048576,
+                    "default": null,
+                    "encrypt": false
                 }
             ],
             "indexes": []
