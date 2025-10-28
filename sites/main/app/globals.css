@@ -77,3 +77,8 @@
 [data-mantine-color-scheme="dark"] .darkmode {
   display: block;
 }
+
+.github-btn > span > span { 
+    display: flex;
+    margin-right: 20px;
+}
