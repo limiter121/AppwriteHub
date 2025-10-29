@@ -1,4 +1,5 @@
 @import "tailwind-preset-mantine";
+@import "@mantine/dropzone/styles.css";
 
 @keyframes text-glow {
   0%,

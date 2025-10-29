@@ -46,7 +46,7 @@ export default function ProjectLinker({ children, buttonProps, iconProps }) {
             required
           />
 
-          <section className="border-y py-4 border-gray-700">
+          <section className="border-y py-4 border-gray-light">
             <p className="text-sm">
               Obtained from the Appwrite Console → <i>Your Project</i> →
               Settings → Overview → API Credentials
@@ -67,7 +67,7 @@ export default function ProjectLinker({ children, buttonProps, iconProps }) {
               required
             />
           </section>
-          <section className="border-b py-4 border-slate-200">
+          <section className="border-b py-4 border-gray-light">
             <p className="text-sm">
               Obtained from the Appwrite Console → <i>Your Project</i> →
               Overview → Integrations → API keys

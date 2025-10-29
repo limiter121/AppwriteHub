@@ -6,6 +6,9 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     optimizePackageImports: ["@mantine/core", "@mantine/hooks"],
+    serverActions: {
+      bodySizeLimit: '30mb',
+    },
   },
 };
 

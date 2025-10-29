@@ -4,6 +4,7 @@ import { createAdminClient, createSessionClient } from "@/lib/server/appwrite";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import ZipInfo from "@/lib/zipinfo";
 
 export async function signInWithEmail(currentState, formData) {
   const email = formData.get("email");
@@ -103,4 +104,20 @@ export async function linkProject(currentState, formData) {
   revalidatePath("/dashboard");
 
   return true;
+}
+
+export async function importFunctionality(currentState, formData) {
+  const archive = formData.get("archive");
+  if (archive.size > 0) {
+    const data = await archive.arrayBuffer();
+    const buffer = Buffer.from(data, "binary");
+    const entries = ZipInfo.getEntries(buffer);
+    if (!entries.find((e) => e.filename === "appwrite.config.json")) {
+      return "No appwrite.config.json found in archive";
+    }
+  } else {
+    return "No archive provided";
+  }
+
+  redirect("/dashboard");
 }

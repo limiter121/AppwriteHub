@@ -14,10 +14,14 @@ import { colors } from "@/lib/config";
 import { GradientSegmentedControl } from "@/components/GradientSegmentedControl";
 import { useState } from "react";
 
-export default function FunctionalityGrid({ functionalities }) {
+export default function FunctionalityGrid({
+  functionalities,
+  showFilter = true,
+  cols = { base: 1, sm: 2, md: 3, lg: 4 },
+}) {
   const [filter, setFilter] = useState("All");
   const filtered =
-    filter === "All"
+    filter === "All" || !showFilter
       ? functionalities
       : functionalities.filter(
           (f) => f.category === filter.toLowerCase().replace(" ", "-"),
@@ -25,15 +29,17 @@ export default function FunctionalityGrid({ functionalities }) {
 
   return (
     <>
-      <GradientSegmentedControl
-        radius="xl"
-        size="md"
-        mb="xl"
-        data={["All", "Content Management", "Integration", "Other"]}
-        value={filter}
-        onChange={setFilter}
-      />
-      <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 4 }}>
+      {showFilter && (
+        <GradientSegmentedControl
+          radius="xl"
+          size="md"
+          mb="xl"
+          data={["All", "Content Management", "Integration", "Other"]}
+          value={filter}
+          onChange={setFilter}
+        />
+      )}
+      <SimpleGrid cols={cols}>
         {filtered.map((functionality) => (
           <Card
             key={functionality.$id}
@@ -93,7 +99,7 @@ export default function FunctionalityGrid({ functionalities }) {
         ))}
       </SimpleGrid>
       {filtered.length === 0 && (
-        <div className="flex flex-col gap-8 p-20 items-center justify-center">
+        <div className="flex flex-col gap-8 p-18 items-center justify-center">
           <Image src="/empty.svg" alt="No functionalities yet..." w={300} />
           <p>No functionalities yet...</p>
         </div>
