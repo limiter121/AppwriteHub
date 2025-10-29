@@ -33,10 +33,14 @@ This is the central web application where users can **browse**, **discover**, an
 
 Internal specialized Appwrite Functions that power the Hub's automation and management features.
 
-- `functions/linker` : responsible for linking a user's Appwrite project to the AppwriteHub. It also installs the *AppwriteHub Core*, enabling future management.
--  `functions/installer`: automatically provisions all the resources used by the functionality (Databases, Functions, Sites, and more) into the linked project.
+- `functions/linker`: responsible for linking a user's Appwrite project to the AppwriteHub. It also installs the *AppwriteHub Core*, enabling future management
+-  `functions/installer`: automatically provisions all the resources used by the functionality (Databases, Functions, Sites, and more) into the linked project
 - `functions/syncer`: periodically checks and syncs all linked projects (including status, installed functionalities, etc.) with AppwriteHub
-    
+- `functions/updater`: periodically checks and updates functionalities in linked projects (opt-in) - **PLANNED**
+
+### 3. Functionalities (`functionalities/`)
+
+Functionalities built and maintained by the AppwriteHub team - including essentials like the *AppwriteHub Core*.
 
 ## Technical Setup
 
