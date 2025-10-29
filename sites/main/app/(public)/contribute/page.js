@@ -1,5 +1,6 @@
-import { Alert, Code } from "@mantine/core";
+import { Alert, Button, Code } from "@mantine/core";
 import { IconCloudUp, IconCode, IconFileTypeZip } from "@tabler/icons-react";
+import Link from "next/link";
 
 export const metadata = {
   title: "Contribute · " + process.env.NEXT_PUBLIC_APP_NAME,
@@ -89,6 +90,17 @@ export default async function ContributePage() {
                   functionality to AppwriteHub -{" "}
                   <b>share it with the community</b>.
                 </p>
+                <Button
+                  className="shrink-0 mt-8 sm:mt-0 mx-auto"
+                  leftSection={<IconCloudUp size={22} />}
+                  color="pink"
+                  size="md"
+                  mt="md"
+                  component={Link}
+                  href="/functionality/publish"
+                >
+                  Publish your functionality now
+                </Button>
               </div>
             </div>
           </div>
