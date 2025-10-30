@@ -52,7 +52,11 @@ export default async function Dashboard() {
           Publish functionality
         </Button>
       </div>
-      <FunctionalityGrid functionalities={functionalities} showFilter={false} cols={{ base: 1, sm: 2, md: 3 }} />
+      <FunctionalityGrid
+        functionalities={functionalities}
+        showFilter={false}
+        cols={{ base: 1, sm: 2, md: 3 }}
+      />
     </div>
   );
 }

@@ -1,11 +1,16 @@
 import { colors } from "@/lib/config";
 import { createSessionClient, getLoggedInUser } from "@/lib/server/appwrite";
 import {
+  Accordion,
+  AccordionControl,
+  AccordionItem,
+  AccordionPanel,
   ActionIcon,
   Alert,
   Anchor,
   Badge,
   Group,
+  Image,
   Menu,
   MenuDivider,
   MenuDropdown,
@@ -13,11 +18,16 @@ import {
   MenuLabel,
   MenuTarget,
   Stack,
+  Table,
+  TableTbody,
+  TableTd,
+  TableTh,
+  TableThead,
+  TableTr,
   Text,
 } from "@mantine/core";
 import {
   IconAlertCircle,
-  IconClockPlus,
   IconDots,
   IconExternalLink,
   IconRefresh,
@@ -63,43 +73,92 @@ function ProjectActionMenu({ project, formatDate }) {
 }
 
 function ActiveProjectView({ project, formatDate }) {
-  const installs = JSON.parse(project.installs || "[]");
+  const installs = project.installs.reduce((result, install) => {
+    const id = install.functionality.$id;
+    if (!result[id]) {
+      result[id] = [];
+    }
+    result[id].push(install);
+    return result;
+  }, {});
 
   return (
     <>
-      <h2 className="font-bold text-lg">Installed functionalities</h2>
-      <ul>
-        {installs.map((install) => (
-          <li key={install.$id} className="p-2">
-            <Anchor
-              c="pink"
-              fw={500}
-              href={`/functionality/${install.functionalityId}`}
-              target="_blank"
+      <h2 className="font-bold text-lg mb-2">Installs</h2>
+      <Accordion variant="contained">
+        {Object.values(installs).map(([install, ...rest]) => (
+          <AccordionItem key={install.$id} value={install.functionality.$id}>
+            <AccordionControl
+              p="sm"
+              icon={
+                <Image
+                  src={
+                    install.functionality.cover
+                      ? `https://fra.cloud.appwrite.io/v1/storage/buckets/68fcabcf0013485fa596/files/${install.functionality.cover}/view?project=68fa5b200021065d9e06`
+                      : "/placeholder-light.avif"
+                  }
+                  h={48}
+                  bdrs="sm"
+                  alt={install.functionality.title}
+                />
+              }
             >
-              {install.functionality}{" "}
-              <IconExternalLink className="inline" size={18} />
-            </Anchor>
-            <p className="text-sm text-gray-600 flex items-center gap-2">
-              <b>{install.version}</b> -{" "}
-              <span
-                className="flex items-center gap-1"
-                title="Installation date"
+              <Anchor
+                c="pink"
+                fw={500}
+                href={`/functionality/${install.functionality.$id}`}
+                target="_blank"
+                className="flex items-center gap-1 w-fit"
               >
-                <IconClockPlus size={16} />{" "}
-                {formatDate(install.$createdAt, {
-                  day: "numeric",
-                  month: "numeric",
-                  year: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                  second: "numeric",
-                })}
-              </span>
-            </p>
-          </li>
+                {install.functionality.title}
+                <IconExternalLink className="inline" size={16} />
+              </Anchor>
+            </AccordionControl>
+            <AccordionPanel>
+              <Table>
+                <TableThead>
+                  <TableTr>
+                    <TableTh>Version</TableTh>
+                    <TableTh w={200} ta="center">
+                      Date
+                    </TableTh>
+                    <TableTh w={150} ta="right">
+                      Status
+                    </TableTh>
+                  </TableTr>
+                </TableThead>
+                <TableTbody>
+                  {[install, ...rest].map((install) => (
+                    <TableTr key={install.$id}>
+                      <TableTd className="font-bold">
+                        {install.version.number}
+                      </TableTd>
+                      <TableTd ta="right">
+                        {formatDate(install.$createdAt, {
+                          day: "numeric",
+                          month: "numeric",
+                          year: "numeric",
+                          hour: "numeric",
+                          minute: "numeric",
+                          second: "numeric",
+                        })}
+                      </TableTd>
+                      <TableTd ta="right">
+                        <Badge
+                          variant="dot"
+                          color={colors.installStatus[install.status]}
+                        >
+                          {install.status}
+                        </Badge>
+                      </TableTd>
+                    </TableTr>
+                  ))}
+                </TableTbody>
+              </Table>
+            </AccordionPanel>
+          </AccordionItem>
         ))}
-      </ul>
+      </Accordion>
     </>
   );
 }
@@ -137,7 +196,14 @@ export default async function Project({ params }) {
     databaseId: "68fca7cb002fb26ac958",
     tableId: "projects",
     rowId: id,
-    queries: [],
+    queries: [
+      Query.select([
+        "*",
+        "installs.*",
+        "installs.version.*",
+        "installs.functionality.*",
+      ]),
+    ],
   });
   return (
     <main className="container mx-auto max-w-4xl">

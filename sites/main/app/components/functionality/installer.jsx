@@ -13,11 +13,27 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconLinkPlus, IconPlus } from "@tabler/icons-react";
 import Link from "next/link";
 
-export default function FunctionalityInstaller({ children, functionality }) {
+export default function FunctionalityInstaller({
+  children,
+  functionality,
+  projects,
+}) {
   const [
     installModalOpened,
     { open: openInstallModal, close: closeInstallModal },
   ] = useDisclosure(false);
+  const eligibleProjects = projects
+    .filter((project) => {
+      if (project.status !== "active") return false;
+      if (
+        project.installs?.find(
+          (install) => install.functionality.$id === functionality.$id,
+        )
+      )
+        return false;
+      return true;
+    })
+    .map((project) => ({ value: project.$id, label: project.name }));
 
   return (
     <>
@@ -47,9 +63,10 @@ export default function FunctionalityInstaller({ children, functionality }) {
           <Select
             label="Project"
             placeholder="Select your project"
+            data={eligibleProjects}
             nothingFoundMessage={
               <Stack gap="xs">
-                <Text size="sm">No linked projects found...</Text>
+                <Text size="sm">No eligible projects found...</Text>
                 <Button
                   color="pink"
                   variant="light"
