@@ -1,4 +1,4 @@
-import { createAdminClient } from "@/lib/server/appwrite";
+import { createAdminClient, createSessionClient } from "@/lib/server/appwrite";
 import {
   Table,
   TableTbody,
@@ -10,10 +10,20 @@ import {
   TimelineItem,
   Text,
   Anchor,
+  Accordion,
+  AccordionItem,
+  AccordionControl,
+  AccordionPanel,
+  List,
+  ListItem,
+  Spoiler,
+  Button,
 } from "@mantine/core";
 import { getFormatter } from "next-intl/server";
 import { colors } from "@/lib/config";
 import FunctionalityInstaller from "@/components/functionality/installer";
+import { IconBolt, IconDatabase, IconFolder, IconMinus, IconPlus, IconTable, IconWorld } from "@tabler/icons-react";
+import { Fragment } from "react";
 
 export async function generateMetadata({ params }, parent) {
   const { id } = await params;
@@ -25,7 +35,6 @@ export async function generateMetadata({ params }, parent) {
     queries: [Query.select(["title", "author"])],
   });
 
-  // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
@@ -51,6 +60,19 @@ export default async function Functionality({ params }) {
     queries: [Query.select(["*", "versions.*"])],
   });
   const versions = functionality.versions.reverse();
+
+  let projects = []
+  try {
+    const { tablesDB: userTablesDB, Query: userQuery } = await createSessionClient();
+    const { rows } = await userTablesDB.listRows({
+      databaseId: "68fca7cb002fb26ac958",
+      tableId: "projects",
+      queries: [
+        userQuery.select(["*", "installs.*", "installs.version.*", "installs.functionality.*"]),
+      ],
+    });
+    projects = rows
+  } catch (error) {}
 
   return (
     <>
@@ -132,7 +154,7 @@ export default async function Functionality({ params }) {
                 </TableTbody>
               </Table>
 
-              <FunctionalityInstaller functionality={functionality} />
+              <FunctionalityInstaller functionality={functionality} projects={projects} />
             </div>
           </div>
         </div>
@@ -142,7 +164,7 @@ export default async function Functionality({ params }) {
           <h2 className="text-lg mb-4">Version history</h2>
           <Timeline active={0} color="pink" bulletSize={24} lineWidth={4}>
             {versions.map((version) => (
-              <TimelineItem title={version.number} key={version.$id}>
+              <TimelineItem title={version.number} key={version.$id} pb={1}>
                 <Text size="xs" mt={4} mb="sm">
                   {format.dateTime(new Date(version.$createdAt), {
                     year: "numeric",
@@ -155,6 +177,39 @@ export default async function Functionality({ params }) {
                     {line}
                   </Text>
                 ))}
+                {version.contents && <Spoiler mt="md" maxHeight={0} c="dimmed" showLabel={<span className="text-sm flex items-center gap-2 text-pink"><IconPlus size={14} /> Show contents</span>} hideLabel={<span className="text-sm flex items-center gap-2 text-pink mt-2"><IconMinus size={14} /> Hide contents</span>}>
+                  <Accordion variant="contained" className="max-w-lg">
+                    {Object.entries(JSON.parse(version.contents)).map(([service, items]) => {
+                      const icons = (props) => ({
+                        databases: <IconDatabase {...props} />,
+                        functions: <IconBolt {...props} />,
+                        storage: <IconFolder {...props} />,
+                        sites: <IconWorld {...props} />,
+                        tables: <IconTable {...props} />,
+                      })
+                      const iconslg = icons({ size: 18 })
+                      const iconssm = icons({ size: 14 })
+                      return (
+                        <AccordionItem key={service} value={service}>
+                          <AccordionControl fz="xs" c="pink" icon={iconslg[service]}>{service.toUpperCase()}</AccordionControl>
+                          <AccordionPanel>
+                            <List size="sm" spacing={3} icon={iconssm[service]}>
+                              {service === "databases" && (
+                                Object.entries(items).map(([db, tables]) => <Fragment key={db}>
+                                  <ListItem>{db}</ListItem>
+                                  {tables.map((table) => <ListItem className="ms-4" icon={iconssm['tables']} key={db + table}>{table}</ListItem>)}
+                                </Fragment>)
+                              )}
+                              {service !== "databases" && (
+                                items.map((item) => <ListItem key={item}>{item}</ListItem>)
+                              )}
+                            </List>
+                          </AccordionPanel>
+                        </AccordionItem>
+                      )
+                    })}
+                  </Accordion>
+                </Spoiler>}
               </TimelineItem>
             ))}
           </Timeline>
