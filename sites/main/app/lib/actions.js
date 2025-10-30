@@ -1,11 +1,15 @@
 "use server";
 
-import { createAdminClient, createSessionClient } from "@/lib/server/appwrite";
+import {
+  createAdminClient,
+  createSessionClient,
+  getRemoteClient,
+} from "@/lib/server/appwrite";
 import { configToContents } from "@/lib/appwrite";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { iter } from 'but-unzip';
+import { iter } from "but-unzip";
 
 export async function signInWithEmail(currentState, formData) {
   const email = formData.get("email");
@@ -89,19 +93,64 @@ export async function linkProject(currentState, formData) {
   const endpoint = formData.get("endpoint");
   const key = formData.get("key");
 
-  const { tablesDB } = await createSessionClient();
-  await tablesDB.createRow({
-    databaseId: "68fca7cb002fb26ac958",
-    tableId: "projects",
-    rowId: project,
-    data: {
-      name,
-      endpoint,
-      key,
-    },
-  });
+  try {
+    const remoteClient = await getRemoteClient(endpoint, project, key);
+    const pong = await remoteClient.ping();
+    console.log("ping:", pong);
 
-  revalidatePath("/dashboard");
+    const version = (
+      await (await fetch(`${endpoint.replace("/v1", "")}/versions`)).json()
+    ).server;
+    console.log("version", version);
+
+    const { tablesDB } = await createSessionClient();
+    await tablesDB.createRow({
+      databaseId: "68fca7cb002fb26ac958",
+      tableId: "projects",
+      rowId: project,
+      data: {
+        name,
+        endpoint,
+        key,
+        version,
+        status: "active",
+      },
+    });
+
+    revalidatePath("/dashboard");
+    return true;
+  } catch (error) {
+    console.error("LINK FAIL!", error);
+    return error.message;
+  }
+
+  return;
+}
+
+export async function installFunctionality(currentState, formData) {
+  const functionality = formData.get("functionality");
+  if (!functionality) {
+    return "No functionality selected";
+  }
+  const id = formData.get("project");
+  if (!id) {
+    return "No project selected";
+  }
+
+  const { functions } = await createSessionClient();
+  try {
+    await functions.createExecution({
+      functionId: '68fdcbc20008ec351432',
+      body: JSON.stringify({
+        project: id,
+        functionality,
+      }),
+      async: true,
+    });
+  } catch (error) {
+    console.error("INSTALL FAIL!", error);
+    return error.message;
+  }
 
   return true;
 }
@@ -111,12 +160,12 @@ export async function importFunctionality(currentState, formData) {
   if (archive.size > 0) {
     const data = await archive.arrayBuffer();
     const buffer = Buffer.from(data, "binary");
-    let appwriteConfig
+    let appwriteConfig;
     for (const entry of iter(buffer)) {
       if (entry.filename === "appwrite.config.json") {
-        console.log('found appwrite config')
+        console.log("found appwrite config");
         const bytes = await entry.read();
-        appwriteConfig = JSON.parse(bytes.toString('utf-8'));
+        appwriteConfig = JSON.parse(bytes.toString("utf-8"));
         break;
       }
     }

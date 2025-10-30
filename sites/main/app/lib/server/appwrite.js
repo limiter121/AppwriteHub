@@ -1,5 +1,5 @@
 "use server";
-import { Client, Account, TablesDB, Query, ID } from "node-appwrite";
+import { Client, Account, TablesDB, Functions, Query, ID } from "node-appwrite";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -45,6 +45,9 @@ export async function createAdminClient() {
     get tablesDB() {
       return new TablesDB(client);
     },
+    get functions() {
+      return new Functions(client);
+    },
     get Query() {
       return Query;
     },
@@ -52,6 +55,15 @@ export async function createAdminClient() {
       return ID;
     },
   };
+}
+
+export async function getRemoteClient(endpoint, project, key) {
+  const client = new Client()
+    .setEndpoint(endpoint)
+    .setProject(project)
+    .setKey(key);
+
+  return client;
 }
 
 export async function getLoggedInUser() {

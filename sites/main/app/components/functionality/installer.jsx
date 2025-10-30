@@ -1,5 +1,6 @@
 "use client";
 
+import { installFunctionality } from "@/lib/actions";
 import {
   Alert,
   Button,
@@ -12,12 +13,14 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { IconLinkPlus, IconPlus } from "@tabler/icons-react";
 import Link from "next/link";
+import { useActionState } from "react";
 
 export default function FunctionalityInstaller({
   children,
   functionality,
   projects,
 }) {
+  const [result, action, pending] = useActionState(installFunctionality, false);
   const [
     installModalOpened,
     { open: openInstallModal, close: closeInstallModal },
@@ -34,6 +37,10 @@ export default function FunctionalityInstaller({
       return true;
     })
     .map((project) => ({ value: project.$id, label: project.name }));
+
+  if (result === true && installModalOpened) {
+    closeInstallModal();
+  }
 
   return (
     <>
@@ -59,8 +66,15 @@ export default function FunctionalityInstaller({
         }
         centered
       >
-        <form>
+        {result?.length && (
+          <Alert title="Something went wrong" color="red" mb="md">
+            {result}
+          </Alert>
+        )}
+        <form action={action}>
+          <input type="hidden" name="functionality" value={functionality.$id} />
           <Select
+            name="project"
             label="Project"
             placeholder="Select your project"
             data={eligibleProjects}
@@ -90,6 +104,7 @@ export default function FunctionalityInstaller({
             leftSection={<IconPlus />}
             size="sm"
             mt="lg"
+            loading={pending}
             fullWidth
           >
             Install now

@@ -7,11 +7,11 @@ import { linkProject } from "@/lib/actions";
 import { useActionState } from "react";
 
 export default function ProjectLinker({ children, buttonProps, iconProps }) {
-  const [added, action, pending] = useActionState(linkProject, false);
+  const [result, action, pending] = useActionState(linkProject, false);
   const [linkModalOpened, { open: openLinkModal, close: closeLinkModal }] =
     useDisclosure(false);
 
-  if (added && linkModalOpened) {
+  if (result === true && linkModalOpened) {
     closeLinkModal();
   }
 
@@ -37,6 +37,11 @@ export default function ProjectLinker({ children, buttonProps, iconProps }) {
         title={<>Link your Appwrite project</>}
         centered
       >
+        {result?.length && (
+          <Alert title="Something went wrong" color="red" mb="md">
+            {result}
+          </Alert>
+        )}
         <form action={action}>
           <TextInput
             name="name"
@@ -53,16 +58,16 @@ export default function ProjectLinker({ children, buttonProps, iconProps }) {
             </p>
 
             <TextInput
-              name="endpoint"
-              label="API Endpoint"
-              placeholder="ex. https://cloud.appwrite.io/v1"
+              name="project"
+              label="Project ID"
+              placeholder="ex. 3n8r9ds0jwme4g1aamia"
               mt="xs"
               required
             />
             <TextInput
-              name="project"
-              label="Project ID"
-              placeholder="ex. 3n8r9ds0jwme4g1aamia"
+              name="endpoint"
+              label="API Endpoint"
+              placeholder="ex. https://cloud.appwrite.io/v1"
               mt="xs"
               required
             />

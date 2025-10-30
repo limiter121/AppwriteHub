@@ -60,7 +60,9 @@
     "functions": [
         {
             "$id": "68fdcbc20008ec351432",
-            "execute": [],
+            "execute": [
+                "users"
+            ],
             "name": "installer",
             "enabled": true,
             "logging": true,
@@ -68,6 +70,8 @@
             "scopes": [
                 "rows.read",
                 "documents.read",
+                "rows.write",
+                "documents.write",
                 "files.read"
             ],
             "events": [],
@@ -77,29 +81,6 @@
             "commands": "npm install",
             "specification": "s-0.5vcpu-512mb",
             "path": "functions/installer"
-        },
-        {
-            "$id": "68ff5f32002458198eaf",
-            "execute": [],
-            "name": "linker",
-            "enabled": true,
-            "logging": true,
-            "runtime": "node-22",
-            "scopes": [
-                "rows.read",
-                "documents.read",
-                "execution.read",
-                "execution.write"
-            ],
-            "events": [
-                "databases.68fca7cb002fb26ac958.tables.projects.rows.*.create"
-            ],
-            "schedule": "",
-            "timeout": 15,
-            "entrypoint": "src/main.js",
-            "commands": "npm install",
-            "specification": "s-0.5vcpu-512mb",
-            "path": "functions/linker"
         },
         {
             "$id": "68ff972e001437d4c551",
@@ -136,8 +117,7 @@
         {
             "$id": "functionalities",
             "$permissions": [
-                "read(\"any\")",
-                "create(\"users\")"
+                "read(\"any\")"
             ],
             "databaseId": "68fca7cb002fb26ac958",
             "name": "Functionalities",
@@ -234,7 +214,9 @@
         },
         {
             "$id": "versions",
-            "$permissions": [],
+            "$permissions": [
+                "read(\"users\")"
+            ],
             "databaseId": "68fca7cb002fb26ac958",
             "name": "Versions",
             "enabled": true,
@@ -296,6 +278,15 @@
                     "size": 36,
                     "default": null,
                     "encrypt": false
+                },
+                {
+                    "key": "contents",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 4096,
+                    "default": "1048576",
+                    "encrypt": false
                 }
             ],
             "indexes": []
@@ -316,26 +307,47 @@
                     "relatedTable": "versions",
                     "relationType": "manyToOne",
                     "twoWay": false,
-                    "twoWayKey": "68fdb109003a59330361",
-                    "onDelete": "setNull",
+                    "twoWayKey": "69025f5000029ada85e5",
+                    "onDelete": "restrict",
                     "side": "parent"
                 },
                 {
-                    "key": "user",
+                    "key": "status",
                     "type": "string",
                     "required": true,
                     "array": false,
-                    "size": 36,
-                    "default": null,
-                    "encrypt": false
+                    "elements": [
+                        "success",
+                        "failed",
+                        "pending",
+                        "installing"
+                    ],
+                    "format": "enum",
+                    "default": null
                 },
                 {
-                    "key": "finishedAt",
-                    "type": "datetime",
+                    "key": "project",
+                    "type": "relationship",
                     "required": false,
                     "array": false,
-                    "format": "",
-                    "default": null
+                    "relatedTable": "projects",
+                    "relationType": "manyToOne",
+                    "twoWay": true,
+                    "twoWayKey": "installs",
+                    "onDelete": "cascade",
+                    "side": "parent"
+                },
+                {
+                    "key": "functionality",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedTable": "functionalities",
+                    "relationType": "manyToOne",
+                    "twoWay": false,
+                    "twoWayKey": "6903154c0023840f2d8d",
+                    "onDelete": "restrict",
+                    "side": "parent"
                 }
             ],
             "indexes": []
@@ -392,10 +404,22 @@
                 },
                 {
                     "key": "installs",
-                    "type": "string",
+                    "type": "relationship",
                     "required": false,
                     "array": false,
-                    "size": 1048576,
+                    "relatedTable": "installs",
+                    "relationType": "manyToOne",
+                    "twoWay": true,
+                    "twoWayKey": "project",
+                    "onDelete": "cascade",
+                    "side": "child"
+                },
+                {
+                    "key": "version",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 32,
                     "default": null,
                     "encrypt": false
                 }

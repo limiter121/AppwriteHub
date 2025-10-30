@@ -1,4 +1,4 @@
-import { Client, TablesDB, Storage, Query } from 'node-appwrite';
+import { Client, TablesDB, Storage, Query, Permission, Role, ID } from 'node-appwrite';
 import { spawn, spawnSync } from 'node:child_process';
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -8,43 +8,16 @@ import { gte, rcompare, satisfies } from 'semver'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-async function installFunctionality(id, { projectId, endpoint, installs }, { tablesDb, storage, log, error, cli }) {
+async function installFunctionality(id, fileId, projectId, { storage, log, error, cli }) {
   log('Installing functionality:', id)
-
-  // get latest version
-  const versions = await tablesDb.listRows({
-    databaseId: '68fca7cb002fb26ac958',
-    tableId: 'versions',
-    queries: [
-      Query.equal('functionality', id),
-      Query.select(['*', 'functionality.title'])
-    ],
-  })
-  const latest = versions.rows.sort(rcompare)[0]
-  log('Latest version available:', latest.number)
-
-  // check if already installed
-  const installed = installs.find(install => install.functionality === id)
-  log('Installed version:', installed?.version || '-')
-  if (installed && gte(installed.version, latest.number)) {
-    throw new Error('Functionality with same or newer version already installed !')
-  }
-
-  // check appwrite compatibility
-  const awVersion = (await (await fetch(endpoint)).json()).version
-  log('Found Appwrite version:', awVersion, )
-  const compatible = satisfies(awVersion, latest.compatibility)
-  if (!compatible) {
-    throw new Error('Functionality not compatible with Appwrite version')
-  }
 
   const file = await storage.getFileView({
     bucketId: '68fcabcf0013485fa596',
-    fileId: latest.file,
+    fileId,
   });
   const buf = Buffer.from(file)
-  const zipPath = path.join('/tmp/', latest.file + '.zip')
-  const unzipPath = path.join('/tmp/', latest.file)
+  const zipPath = path.join('/tmp/', fileId + '.zip')
+  const unzipPath = path.join('/tmp/', fileId)
   writeFileSync(zipPath, buf)
 
   const unzip = await spawnSync('unzip', ['-o', zipPath, '-d', unzipPath])
@@ -64,19 +37,22 @@ async function installFunctionality(id, { projectId, endpoint, installs }, { tab
 
   cli(['push', 'tables', '--all', '--force'], { spawnOptions: { cwd: unzipPath } })
 
-  const install = cli(['tables-db', 'create-row', '--database-id', 'appwritehub', '--table-id', 'installs', '--row-id', 'unique()', '--json', '--data', JSON.stringify({ functionality: latest.functionality.title, functionalityId: id, version: latest.number, versionId: latest.$id })], { logArgs: false, logOutput: false, parseJson: true })
-  log('Functionality installed !', install.$id)
-
   rmSync(unzipPath, { recursive: true, force: true })
 }
 
 export default async ({ req, res, log, error }) => {
-  const client = new Client()
+  const adminClient = new Client()
     .setEndpoint(process.env.APPWRITE_FUNCTION_API_ENDPOINT)
     .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
     .setKey(req.headers['x-appwrite-key'] ?? '');
-  const tablesDb = new TablesDB(client);
-  const storage = new Storage(client);
+  const tablesDb = new TablesDB(adminClient);
+  const storage = new Storage(adminClient);
+
+  const sessionClient = new Client()
+    .setEndpoint(process.env.APPWRITE_FUNCTION_API_ENDPOINT)
+    .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
+    .setJWT(req.headers['x-appwrite-user-jwt'] ?? '');
+  const userTablesDb = new TablesDB(sessionClient);
 
   const cli = (args, { logArgs = true, logOutput = true, parseJson = false, spawnOptions = undefined } = {}) => {
     const normalizedArgs = Array.isArray(args) ? args : [args]
@@ -97,22 +73,83 @@ export default async ({ req, res, log, error }) => {
     return result.output
   }
 
-  // Login
-  cli(['client', '--endpoint', req.bodyJson.endpoint, '--project-id', req.bodyJson.project, '--key', req.bodyJson.key], { logArgs: false })
+  // get latest version
+  const versions = await tablesDb.listRows({
+    databaseId: '68fca7cb002fb26ac958',
+    tableId: 'versions',
+    queries: [
+      Query.equal('functionality', req.bodyJson.functionality),
+    ],
+  })
+  const latest = versions.rows.sort(rcompare)[0]
+  log('Latest version available:', latest.number)
 
-  // Check installs
-  let installs = { total: 0, rows: [] }
-  if (req.bodyJson.skipChecks) {
-    log('Skipping checks...')
-  } else {
-    installs = cli(['tables-db', 'list-rows', '--database-id', 'appwritehub', '--table-id', 'installs', '--json'], { logOutput: false, parseJson: true })
-    log('Found', installs.total, 'installs')
-    if (installs.total === 0) {
-      throw new Error('No existing installs found')
+  const install = await tablesDb.createRow({
+    databaseId: '68fca7cb002fb26ac958',
+    tableId: 'installs',
+    rowId: ID.unique(),
+    data: {
+      project: req.bodyJson.project,
+      functionality: req.bodyJson.functionality,
+      version: latest.$id,
+      status: 'installing',
+    },
+    permissions: [
+      Permission.read(Role.user(req.headers['x-appwrite-user-id'])),
+    ]
+  })
+  log('install id: ', install.$id)
+
+  let status
+  try {
+    const project = await userTablesDb.getRow({
+      databaseId: '68fca7cb002fb26ac958',
+      tableId: 'projects',
+      rowId: req.bodyJson.project,
+    });
+
+    // Login
+    cli(['client', '--endpoint', project.endpoint, '--project-id', project.project, '--key', project.key], { logArgs: false })
+
+    // check if already installed
+    const installs = await tablesDb.listRows({
+      databaseId: '68fca7cb002fb26ac958',
+      tableId: 'installs',
+      queries: [
+        Query.equal('functionality', req.bodyJson.functionality),
+        Query.equal('status', 'success'),
+        Query.select(['*', 'version.number', 'version.compatibility'])
+      ],
+    })
+    for (const install of installs.rows) {
+      if (gte(install.version.number, latest.number)) {
+        throw new Error('Functionality with same or newer version already installed !')
+      }
     }
-  }
 
-  await installFunctionality(req.bodyJson.functionality, { projectId: req.bodyJson.project, endpoint: req.bodyJson.endpoint, installs: installs.rows }, { tablesDb, storage, log, error, cli })
+    // check appwrite compatibility
+    const compatible = satisfies(project.version, latest.compatibility)
+    if (!compatible) {
+      throw new Error('Functionality not compatible with Appwrite version')
+    }
+
+    await installFunctionality(req.bodyJson.functionality, latest.file, project.$id, { storage, log, error, cli })
+
+    status = 'success'
+  } catch (e) {
+    status = 'failed'
+
+    throw e
+  } finally {
+    await tablesDb.updateRow({
+      databaseId: '68fca7cb002fb26ac958',
+      tableId: 'installs',
+      rowId: install.$id,
+      data: {
+        status,
+      },
+    })
+  }
 
   return res.empty()
 };

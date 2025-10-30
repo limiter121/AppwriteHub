@@ -38,12 +38,17 @@ export default function ProjectList({ projects }) {
                   <Text c="bright" fw="bold" size="lg">
                     {project.name}
                   </Text>
-                  <Text size="xs" c="dimmed">
-                    Endpoint: {project.endpoint}
-                  </Text>
-                  <Text size="xs" c="dimmed" ff="monospace">
-                    ID: {project.$id}
-                  </Text>
+                  <p className="text-xs text-dimmed">
+                    Endpoint:{" "}
+                    <span className="font-mono">{project.endpoint}</span>
+                  </p>
+                  <p className="text-xs text-dimmed">
+                    ID: <span className="font-mono">{project.$id}</span>
+                  </p>
+                  <p className="text-xs text-dimmed">
+                    Appwrite:{" "}
+                    <span className="font-mono">{project.version}</span>
+                  </p>
                 </Stack>
                 <Badge color={colors.projectStatus[project.status]} size="lg">
                   {project.status}

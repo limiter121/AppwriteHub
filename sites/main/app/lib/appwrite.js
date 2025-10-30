@@ -9,15 +9,17 @@ const databases = new Databases(client);
 
 export function configToContents(appwriteConfig) {
   const contents = {};
-  
+
   // TablesDB
   if (appwriteConfig.tablesDB?.length > 0) {
     contents.databases = {};
-    for (const db of (appwriteConfig.tablesDB || [])) {
+    for (const db of appwriteConfig.tablesDB || []) {
       contents.databases[db.name] = [];
     }
-    for (const table of (appwriteConfig.tables || [])) {
-      const db = appwriteConfig.tablesDB.find(db => db.$id === table.databaseId)
+    for (const table of appwriteConfig.tables || []) {
+      const db = appwriteConfig.tablesDB.find(
+        (db) => db.$id === table.databaseId,
+      );
       contents.databases[db.name].push(table.name);
     }
   }
@@ -46,7 +48,7 @@ export function configToContents(appwriteConfig) {
     }
   }
 
-  return contents
+  return contents;
 }
 
 export { client, account, databases };
