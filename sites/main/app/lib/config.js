@@ -8,4 +8,9 @@ export const colors = {
     linking: "yellow",
     active: "green",
   },
+  installStatus: {
+    failed: "red",
+    pending: "yellow",
+    success: "green",
+  },
 };

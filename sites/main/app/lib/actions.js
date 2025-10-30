@@ -1,10 +1,12 @@
 "use server";
 
 import { createAdminClient, createSessionClient } from "@/lib/server/appwrite";
+import { configToContents } from "@/lib/appwrite";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import ZipInfo from "@/lib/zipinfo";
+import { iter } from 'but-unzip';
 
 export async function signInWithEmail(currentState, formData) {
   const email = formData.get("email");
@@ -87,7 +89,6 @@ export async function linkProject(currentState, formData) {
   const project = formData.get("project");
   const endpoint = formData.get("endpoint");
   const key = formData.get("key");
-  console.log("LINK", project);
 
   const { tablesDB } = await createSessionClient();
   await tablesDB.createRow({
@@ -111,10 +112,19 @@ export async function importFunctionality(currentState, formData) {
   if (archive.size > 0) {
     const data = await archive.arrayBuffer();
     const buffer = Buffer.from(data, "binary");
-    const entries = ZipInfo.getEntries(buffer);
-    if (!entries.find((e) => e.filename === "appwrite.config.json")) {
+    let appwriteConfig
+    for (const entry of iter(buffer)) {
+      if (entry.filename === "appwrite.config.json") {
+        console.log('found appwrite config')
+        const bytes = await entry.read();
+        appwriteConfig = JSON.parse(bytes.toString('utf-8'));
+        break;
+      }
+    }
+    if (!appwriteConfig) {
       return "No appwrite.config.json found in archive";
     }
+    const contents = configToContents(appwriteConfig);
   } else {
     return "No archive provided";
   }
