@@ -79,9 +79,11 @@ export default async ({ req, res, log, error }) => {
     tableId: 'versions',
     queries: [
       Query.equal('functionality', req.bodyJson.functionality),
+      Query.orderDesc('$createdAt'),
+      Query.limit(1),
     ],
   })
-  const latest = versions.rows.sort(rcompare)[0]
+  const latest = versions.rows[0]
   log('Latest version available:', latest.number)
 
   const install = await tablesDb.createRow({

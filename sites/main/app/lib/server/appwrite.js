@@ -23,6 +23,9 @@ export async function createSessionClient() {
     get tablesDB() {
       return new TablesDB(client);
     },
+    get functions() {
+      return new Functions(client);
+    },
     get Query() {
       return Query;
     },
