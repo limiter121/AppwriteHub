@@ -5,7 +5,6 @@ import { configToContents } from "@/lib/appwrite";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import ZipInfo from "@/lib/zipinfo";
 import { iter } from 'but-unzip';
 
 export async function signInWithEmail(currentState, formData) {
