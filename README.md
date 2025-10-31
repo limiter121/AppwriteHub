@@ -13,15 +13,14 @@ AppwriteHub is a centralized community-driven platform for discovering, deployin
 
 ## What is a Functionality?
 
-A **Functionality** is a self-contained, versioned archive of a miniature Appwrite project (complete with Databases, Functions, Sites and more) — ready to be installed automatically straight into your linked Appwrite project.
+A **Functionality** is a self-contained, versioned archive of a miniature Appwrite project (complete with Databases, Functions, Sites and more) — ready to be installed automatically straight into your linked Appwrite project. Think of it as a supercharged template.
 
 ## How it works
 
 Integrating AppwriteHub features into your project is as easy as:
 
 1.  Provide your Appwrite **Endpoint**, **Project ID**, and a dedicated **API Key** to link your project
-2.  AppwriteHub automatically installs the essential **AppwriteHub Core** Functionality into your project to enable easy management
-3.  That's it! You can now use the AppwriteHub *Dashboard* to easily **install, update, and manage** all your functionalities
+2.  That's it! You can now use the *AppwriteHub Dashboard* to easily **install, update, and manage** all your functionalities or browse for more
 
 ##  Project components
 
@@ -33,14 +32,14 @@ This is the central web application where users can **browse**, **discover**, an
 
 Internal specialized Appwrite Functions that power the Hub's automation and management features.
 
-- `functions/linker`: responsible for linking a user's Appwrite project to the AppwriteHub. It also installs the *AppwriteHub Core*, enabling future management
 -  `functions/installer`: automatically provisions all the resources used by the functionality (Databases, Functions, Sites, and more) into the linked project
-- `functions/syncer`: periodically checks and syncs all linked projects (including status, installed functionalities, etc.) with AppwriteHub
+~~- `functions/syncer`: periodically checks and syncs all linked projects (including status, installed functionalities, etc.) with AppwriteHub~~ DEPRECATED: Installs are now tracked exclusively in AppwriteHub.
 - `functions/updater`: periodically checks and updates functionalities in linked projects (opt-in) - **PLANNED**
+- `functions/pinger`: periodically pings linked projects and updates status in AppwriteHub (also sends notifications) - **PLANNED**
 
 ### 3. Functionalities (`functionalities/`)
 
-Functionalities built and maintained by the AppwriteHub team - including essentials like the *AppwriteHub Core*.
+Functionalities built and maintained by the AppwriteHub team
 
 ## Technical Setup
 
