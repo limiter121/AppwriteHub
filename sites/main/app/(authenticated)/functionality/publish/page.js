@@ -7,7 +7,7 @@ export default async function PublishPage() {
   if (!user) redirect("/auth/signin");
 
   return (
-    <div className="container max-w-2xl mx-auto mb-20">
+    <div className="container max-w-2xl mx-auto mb-20 p-2">
       <h1 className="text-lg font-bold mb-4">Publish a new functionality</h1>
 
       <FunctionalityPublishForm />

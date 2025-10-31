@@ -2,7 +2,7 @@
 
 import FunctionalityDropzone from "@/components/functionality/dropzone";
 import { importFunctionality } from "@/lib/actions";
-import { Alert, Button, Select, Textarea, TextInput } from "@mantine/core";
+import { Alert, Button, MultiSelect, Select, SimpleGrid, Textarea, TextInput } from "@mantine/core";
 import { useActionState } from "react";
 
 export default function FunctionalityPublishForm() {
@@ -33,8 +33,24 @@ export default function FunctionalityPublishForm() {
         <Select
           name="category"
           label="Category"
-          data={["Content Management", "Integration", "Other"]}
+          data={[
+            { value: "content-management", label: "Content Management" },
+            { value: "integration", label: "Integration" },
+            { value: "other", label: "Other" },
+          ]}
           placeholder="Pick a category"
+          required
+        />
+        <MultiSelect
+          name="services"
+          label="Services used"
+          placeholder="Pick at least one"
+          data={[
+            { value: "databases", label: "Databases" },
+            { value: "functions", label: "Functions" },
+            { value: "storage", label: "Storage" },
+            { value: "sites", label: "Sites" },
+          ]}
           required
         />
         <TextInput
@@ -42,13 +58,22 @@ export default function FunctionalityPublishForm() {
           label="Repository URL"
           placeholder="ex. https://github.com/limiter121/AppwriteHub"
         />
+        <SimpleGrid cols={{ base: 1, sm: 2 }}>
         <TextInput
           name="version"
           label="Version"
           placeholder="ex. 1.0.0"
-          description="Must follow SemVer specification"
+          description={<>semver version. <a className="underline" href="https://devhints.io/semver" target="_blank">Cheatsheet</a></>}
           required
         />
+        <TextInput
+          name="compatibility"
+          label="Compatible with Appwrite"
+          placeholder="ex. 1.8.0 or ^1.8.0 or ~1.8"
+          description={<>semver range. <a className="underline" href="https://devhints.io/semver" target="_blank">Cheatsheet</a></>}
+          required
+        />
+        </SimpleGrid>
         <Textarea
           name="changelog"
           label="Changelog"

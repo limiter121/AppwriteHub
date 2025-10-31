@@ -1,5 +1,6 @@
 "use server";
-import { Client, Account, TablesDB, Functions, Query, ID } from "node-appwrite";
+import { Client, Account, TablesDB, Functions, Storage, Query, Permission, Role, ID } from "node-appwrite";
+import { InputFile } from 'node-appwrite/file';
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -29,6 +30,15 @@ export async function createSessionClient() {
     get Query() {
       return Query;
     },
+    get Permission() {
+      return Permission;
+    },
+    get Role() {
+      return Role;
+    },
+    get ID() {
+      return ID;
+    },
     get cookieName() {
       return cookie;
     },
@@ -50,6 +60,12 @@ export async function createAdminClient() {
     },
     get functions() {
       return new Functions(client);
+    },
+    get storage() {
+      return new Storage(client);
+    },
+    get InputFile() {
+      return InputFile;
     },
     get Query() {
       return Query;
