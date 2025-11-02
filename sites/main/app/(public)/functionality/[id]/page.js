@@ -117,9 +117,13 @@ export default async function Functionality({ params }) {
               >
                 {functionality.category.replace("-", " ").toUpperCase()}
               </Badge>
-              <p className="leading-relaxed mt-4">
-                {functionality.description}
-              </p>
+              <div className="mt-4">
+                {functionality.description.split("\n").map((p, i) => (
+                  <p key={i} className="mt-2">
+                    {p}
+                  </p>
+                ))}
+              </div>
 
               <ul className="flex flex-wrap gap-2 gap-x-2 gap-y-1 mt-4 items-center">
                 Uses:
