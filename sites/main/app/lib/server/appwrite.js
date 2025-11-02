@@ -1,6 +1,16 @@
 "use server";
-import { Client, Account, TablesDB, Functions, Storage, Query, Permission, Role, ID } from "node-appwrite";
-import { InputFile } from 'node-appwrite/file';
+import {
+  Client,
+  Account,
+  TablesDB,
+  Functions,
+  Storage,
+  Query,
+  Permission,
+  Role,
+  ID,
+} from "node-appwrite";
+import { InputFile } from "node-appwrite/file";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 

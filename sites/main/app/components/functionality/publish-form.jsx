@@ -2,7 +2,15 @@
 
 import FunctionalityDropzone from "@/components/functionality/dropzone";
 import { importFunctionality } from "@/lib/actions";
-import { Alert, Button, MultiSelect, Select, SimpleGrid, Textarea, TextInput } from "@mantine/core";
+import {
+  Alert,
+  Button,
+  MultiSelect,
+  Select,
+  SimpleGrid,
+  Textarea,
+  TextInput,
+} from "@mantine/core";
 import { useActionState } from "react";
 
 export default function FunctionalityPublishForm() {
@@ -59,20 +67,42 @@ export default function FunctionalityPublishForm() {
           placeholder="ex. https://github.com/limiter121/AppwriteHub"
         />
         <SimpleGrid cols={{ base: 1, sm: 2 }}>
-        <TextInput
-          name="version"
-          label="Version"
-          placeholder="ex. 1.0.0"
-          description={<>semver version. <a className="underline" href="https://devhints.io/semver" target="_blank">Cheatsheet</a></>}
-          required
-        />
-        <TextInput
-          name="compatibility"
-          label="Compatible with Appwrite"
-          placeholder="ex. 1.8.0 or ^1.8.0 or ~1.8"
-          description={<>semver range. <a className="underline" href="https://devhints.io/semver" target="_blank">Cheatsheet</a></>}
-          required
-        />
+          <TextInput
+            name="version"
+            label="Version"
+            placeholder="ex. 1.0.0"
+            description={
+              <>
+                semver version.{" "}
+                <a
+                  className="underline"
+                  href="https://devhints.io/semver"
+                  target="_blank"
+                >
+                  Cheatsheet
+                </a>
+              </>
+            }
+            required
+          />
+          <TextInput
+            name="compatibility"
+            label="Compatible with Appwrite"
+            placeholder="ex. 1.8.0 or ^1.8.0 or ~1.8"
+            description={
+              <>
+                semver range.{" "}
+                <a
+                  className="underline"
+                  href="https://devhints.io/semver"
+                  target="_blank"
+                >
+                  Cheatsheet
+                </a>
+              </>
+            }
+            required
+          />
         </SimpleGrid>
         <Textarea
           name="changelog"

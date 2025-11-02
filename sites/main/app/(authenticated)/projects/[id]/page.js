@@ -76,14 +76,16 @@ function ProjectActionMenu({ project, formatDate }) {
 }
 
 function ActiveProjectView({ project, formatDate }) {
-  const installs = project.installs.sort((a, b) => new Date(b.$createdAt) - new Date(a.$createdAt)).reduce((result, install) => {
-    const id = install.functionality.$id;
-    if (!result[id]) {
-      result[id] = [];
-    }
-    result[id].push(install);
-    return result;
-  }, {});
+  const installs = project.installs
+    .sort((a, b) => new Date(b.$createdAt) - new Date(a.$createdAt))
+    .reduce((result, install) => {
+      const id = install.functionality.$id;
+      if (!result[id]) {
+        result[id] = [];
+      }
+      result[id].push(install);
+      return result;
+    }, {});
 
   return (
     <>

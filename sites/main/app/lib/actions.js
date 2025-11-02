@@ -138,7 +138,7 @@ export async function installFunctionality(currentState, formData) {
   const { functions } = await createSessionClient();
   try {
     await functions.createExecution({
-      functionId: '68fdcbc20008ec351432',
+      functionId: "68fdcbc20008ec351432",
       body: JSON.stringify({
         project: id,
         functionality,
@@ -155,27 +155,40 @@ export async function installFunctionality(currentState, formData) {
 
 export async function importFunctionality(currentState, formData) {
   const title = formData.get("title");
-  if (!title) { return "No title provided"; }
+  if (!title) {
+    return "No title provided";
+  }
 
   const description = formData.get("description");
-  if (!description) { return "No description provided"; }
+  if (!description) {
+    return "No description provided";
+  }
 
   const category = formData.get("category");
-  if (!category) { return "No category provided"; }
+  if (!category) {
+    return "No category provided";
+  }
 
   const version = formData.get("version");
-  if (!version) { return "No version provided"; }
+  if (!version) {
+    return "No version provided";
+  }
 
   const compatibility = formData.get("compatibility");
-  if (!compatibility) { return "No compatibile Appwrite version provided"; }
+  if (!compatibility) {
+    return "No compatibile Appwrite version provided";
+  }
 
-  const repository = formData.get("repository")?.length > 0 ? formData.get("repository") : null;
+  const repository =
+    formData.get("repository")?.length > 0 ? formData.get("repository") : null;
   const changelog = formData.get("changelog");
 
   const services = formData.get("services").split(",");
-  if (!services.length) { return "No services provided"; }
+  if (!services.length) {
+    return "No services provided";
+  }
 
-  let file
+  let file;
   const archive = formData.get("archive");
   if (archive.size > 0) {
     const data = await archive.arrayBuffer();
@@ -194,7 +207,7 @@ export async function importFunctionality(currentState, formData) {
     }
     const contents = configToContents(appwriteConfig);
 
-    file = { contents, buffer }
+    file = { contents, buffer };
   } else {
     return "No archive provided";
   }
@@ -223,9 +236,7 @@ export async function importFunctionality(currentState, formData) {
         repository,
         services,
       },
-      permissions: [
-        Permission.write(Role.user(user.$id)),
-      ],
+      permissions: [Permission.write(Role.user(user.$id))],
     });
 
     await tablesDB.createRow({
@@ -240,15 +251,16 @@ export async function importFunctionality(currentState, formData) {
         contents: JSON.stringify(file.contents),
         file: ids.file,
       },
-      permissions: [
-        Permission.write(Role.user(user.$id)),
-      ],
+      permissions: [Permission.write(Role.user(user.$id))],
     });
 
     await storage.createFile({
       bucketId: "68fcabcf0013485fa596",
       fileId: ids.file,
-      file: InputFile.fromBuffer(file.buffer, `${ids.functionality}_${ids.version}.zip`),
+      file: InputFile.fromBuffer(
+        file.buffer,
+        `${ids.functionality}_${ids.version}.zip`,
+      ),
     });
   } catch (error) {
     console.error("CREATE FAIL!", error);
